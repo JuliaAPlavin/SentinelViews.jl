@@ -36,7 +36,7 @@ end
 Base.parent(a::SentinelView) = a.parent
 Base.parentindices(a::SentinelView) = (a.indices,)
 
-function sentinelview(A, I, sentinel)
+function sentinelview(A, I, sentinel=nothing)
     sentinel isa keytype(A) && error("incompatible: keytype(A) = $(keytype(A)), sentinel = $sentinel")
     if A isa AbstractArray && eltype(I) <: keytype(A)
         view(A, I)

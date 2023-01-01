@@ -18,6 +18,10 @@ using TestItemRunner
     @test Av == [10, nothing, 30]
     @test Av isa AbstractArray{Union{Int, Nothing}}
 
+    Av = sentinelview(A, [1, nothing, 3])
+    @test Av == [10, nothing, 30]
+    @test Av isa AbstractArray{Union{Int, Nothing}}
+
     @test_throws "incompatible" sentinelview(A, [1, missing, 3], nothing)
     @test_throws "incompatible" sentinelview(A, [1, 3], 0)
 end
