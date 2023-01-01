@@ -1,0 +1,3 @@
+module SentinelViews
+
+end
