@@ -36,6 +36,21 @@ end
 Base.parent(a::SentinelView) = a.parent
 Base.parentindices(a::SentinelView) = (a.indices,)
 
+"""    sentinelview(X, I, [sentinel=nothing])
+
+Like `view(X, I)`, but propagates `sentinel`.
+
+# Examples
+```julia
+A = [10, 20, 30]
+
+Av = sentinelview(A, [1, 2, 3])  # equivalent to view(A, [1, 2, 3])
+Av == [10, 20, 30]
+
+Av = sentinelview(A, [1, nothing, 3])  # propagates nothing in indices to the result
+Av == [10, nothing, 30]
+```
+"""
 function sentinelview(A, I, sentinel=nothing)
     sentinel isa keytype(A) && error("incompatible: keytype(A) = $(keytype(A)), sentinel = $sentinel")
     if A isa AbstractArray && eltype(I) <: keytype(A)
