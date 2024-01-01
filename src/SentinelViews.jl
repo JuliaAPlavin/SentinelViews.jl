@@ -12,9 +12,9 @@ function SentinelView(A, I, sentinel)
     @assert !(sentinel isa keytype(A))
     SentinelView{
         if eltype(I) <: keytype(A)
-            valtype(A)
+            eltype(A)
         elseif eltype(I) <: Union{keytype(A), typeof(sentinel)}
-            Union{valtype(A), typeof(sentinel)}
+            Union{eltype(A), typeof(sentinel)}
         else
             error("incompatible: keytype(A) = $(keytype(A)), eltype(I) = $(eltype(I)), sentinel = $sentinel")
         end,
