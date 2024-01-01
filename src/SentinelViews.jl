@@ -16,7 +16,7 @@ function SentinelView(A, I, sentinel)
         elseif eltype(I) <: Union{keytype(A), typeof(sentinel)}
             Union{valtype(A), typeof(sentinel)}
         else
-            error("incompatible: eltype(A) = $(eltype(A)), eltype(I) = $(eltype(I)), sentinel = $sentinel")
+            error("incompatible: keytype(A) = $(keytype(A)), eltype(I) = $(eltype(I)), sentinel = $sentinel")
         end,
         ndims(I),
         typeof(A),
@@ -51,12 +51,19 @@ Av = sentinelview(A, [1, nothing, 3])  # propagates nothing in indices to the re
 Av == [10, nothing, 30]
 ```
 """
+function sentinelview end
+
 function sentinelview(A, I, sentinel=nothing)
     sentinel isa keytype(A) && error("incompatible: keytype(A) = $(keytype(A)), sentinel = $sentinel")
-    if A isa AbstractArray && eltype(I) <: keytype(A)
+    _sentinelview(A, I, sentinel)
+end
+
+function sentinelview(A::AbstractArray, I::AbstractArray, sentinel=nothing)
+    sentinel isa keytype(A) && error("incompatible: keytype(A) = $(keytype(A)), sentinel = $sentinel")
+    if eltype(I) <: keytype(A)
         view(A, I)
     else
-        SentinelView(A, I, sentinel)
+        _sentinelview(A, I, sentinel)
     end
 end
 
