@@ -67,4 +67,9 @@ function sentinelview(A::AbstractArray, I::AbstractArray, sentinel=nothing)
     end
 end
 
+Base.view(A::SentinelView, I) = SentinelView(parent(A), collect(sentinelview(only(parentindices(A)), I, A.sentinel)), A.sentinel)
+
+_sentinelview(A, I, sentinel) = SentinelView(A, I, sentinel)
+_sentinelview(A::Union{SubArray,SentinelView}, I, sentinel) = SentinelView(parent(A), collect(sentinelview(only(parentindices(A)), I, sentinel)), sentinel)
+
 end

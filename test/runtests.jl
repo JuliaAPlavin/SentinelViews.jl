@@ -55,6 +55,42 @@ end
     @test parent(Av) === A
 end
 
+@testitem "view-of-view" begin
+    A = [10, 20, 30, 40]
+    # no nothing:
+    @testset for vf in (view, sentinelview, (A,I)->SentinelViews._sentinelview(A,I,nothing))
+        Av1 = vf(A, [1, 3, 4])
+        Av2 = vf(Av1, [1, 3])
+        @test Av2 == [10, 40]
+        @test parent(Av2) === A
+        @test parentindices(Av2) == ([1, 4],)
+    end
+    # with nothing:
+    Av1 = sentinelview(A, [1, nothing, 4])
+    Av2 = sentinelview(Av1, [1, 3])
+    @test Av2 == [10, 40]
+    @test parent(Av2) === A
+    @test parentindices(Av2) == ([1, 4],)
+
+    Av1 = sentinelview(A, [1, 3, nothing])
+    Av2 = sentinelview(Av1, [1, 3])
+    @test Av2 == [10, nothing]
+    @test parent(Av2) === A
+    @test parentindices(Av2) == ([1, nothing],)
+
+    Av1 = sentinelview(A, [1, 3, 4])
+    Av2 = sentinelview(Av1, [1, nothing])
+    @test Av2 == [10, nothing]
+    @test parent(Av2) === A
+    @test parentindices(Av2) == ([1, nothing],)
+
+    Av1 = sentinelview(A, [1, 3, nothing])
+    Av2 = sentinelview(Av1, [1, nothing])
+    @test Av2 == [10, nothing]
+    @test parent(Av2) === A
+    @test parentindices(Av2) == ([1, nothing],)
+end
+
 @testitem "_" begin
     import Aqua
     Aqua.test_all(SentinelViews; ambiguities=false)
