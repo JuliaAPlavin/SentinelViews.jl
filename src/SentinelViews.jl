@@ -2,7 +2,7 @@ module SentinelViews
 
 export sentinelview
 
-struct SentinelView{T, N, A, I, TS} <: AbstractArray{T, N}
+struct SentinelView{T, N, A<:AbstractArray, I, TS} <: AbstractArray{T, N}
     parent::A
     indices::I
     sentinel::TS
