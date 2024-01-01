@@ -91,6 +91,27 @@ end
     @test parentindices(Av2) == ([1, nothing],)
 end
 
+@testitem "other collections" begin
+    # https://github.com/JuliaLang/julia/pull/49179
+    Base.keytype(@nospecialize t::Tuple) = keytype(typeof(t))
+    Base.keytype(@nospecialize T::Type{<:Tuple}) = Int
+
+    Av = sentinelview((10, 20, 30), [1, 3], nothing)
+    @test Av == [10, 30]
+    @test Av isa AbstractArray{Int}
+
+    # broken: only support eltype(I) <: keytype(A)
+    # Av = sentinelview((a=10, b=20, c=30), [1, 3], nothing)
+    # @test Av == [10, 30]
+    # @test Av isa AbstractArray{Int}
+
+    if VERSION ≥ v"1.10-"
+        Av = sentinelview((a=10, b=20, c=30), [:a, :c], nothing)
+        @test Av == [10, 30]
+        @test Av isa AbstractArray{Int}
+    end
+end
+
 @testitem "_" begin
     import Aqua
     Aqua.test_all(SentinelViews; ambiguities=false)
